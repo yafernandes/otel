@@ -1,0 +1,30 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: instrumentation
+spec:
+  exporter:
+    endpoint: http://opentelemetry-collector.otel:4317
+  propagators:
+    - tracecontext
+    - baggage
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"
+  # https://opentelemetry.io/docs/kubernetes/operator/automatic/#java
+  java:
+    env:
+      - name: OTEL_METRIC_EXPORT_INTERVAL
+        value: "15000"
+      - name: OTEL_INSTRUMENTATION_HTTP_CLIENT_CAPTURE_REQUEST_HEADERS
+        value: Content-Type
+      - name: OTEL_INSTRUMENTATION_HTTP_CLIENT_CAPTURE_RESPONSE_HEADERS
+        value: Content-Type,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset
+      - name: OTEL_INSTRUMENTATION_HTTP_SERVER_CAPTURE_REQUEST_HEADERS
+        value: Content-Type,Accept
+      - name: OTEL_INSTRUMENTATION_HTTP_SERVER_CAPTURE_RESPONSE_HEADERS
+        value: Content-Type
+      # - name: OTEL_INSTRUMENTATION_SERVLET_EXPERIMENTAL_CAPTURE_REQUEST_PARAMETERS
+      #   value: 
+      - name: OTEL_INSTRUMENTATION_MESSAGING_EXPERIMENTAL_RECEIVE_TELEMETRY_ENABLED
+        value: "true"

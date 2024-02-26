@@ -1,0 +1,67 @@
+mode: daemonset
+service:
+  enabled: true
+presets:
+  hostMetrics:
+    enabled: true
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: false
+    storeCheckpoints: true
+  kubernetesAttributes:
+    enabled: true
+  #   extractAllPodLabels: false
+  #   extractAllPodAnnotations: false
+  kubeletMetrics:
+    enabled: true
+extraEnvsFrom:
+  - secretRef:
+      name: datadog-us1
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+config:
+  connectors:
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/connector/datadogconnector
+    datadog/connector:
+  receivers:
+    kubeletstats:
+      insecure_skip_verify: true
+  processors:
+    attributes:
+      actions:
+        - key: env
+          action: upsert
+          value: otel
+    batch:
+      timeout: 2s
+  exporters:
+    datadog:
+      api:
+        site: ${env:DD_SITE}
+        key: ${env:DD_API_KEY}
+  service:
+    pipelines:
+      metrics:
+        receivers:
+          - otlp
+          - datadog/connector
+        processors:
+          - batch
+          - attributes
+        exporters:
+          - datadog
+      logs:
+        processors:
+          - batch
+          - attributes
+        exporters:
+          - datadog
+      traces:
+        processors:
+          - batch
+          - attributes
+        exporters:
+          - datadog
+          - datadog/connector

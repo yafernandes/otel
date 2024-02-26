@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: developer-app
+  namespace: developer-app
+  labels:
+    app.kubernetes.io/name: developer-app
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "otel/instrumentation"
+spec:
+  containers:
+  - name: developer-app
+    image: yaalexf/developer-app:local
+    imagePullPolicy: Always
+    env:
+    - name: MANAGEMENT_STATSD_METRICS_EXPORT_ENABLED
+      value: "false"
+    resources:
+      limits: {}

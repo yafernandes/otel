@@ -1,0 +1,42 @@
+mode: deployment
+replicaCount: 1
+presets:
+  clusterMetrics:
+    enabled: true
+  kubernetesEvents:
+    enabled: true
+extraEnvsFrom:
+  - secretRef:
+      name: datadog-us1
+config:
+  processors:
+    attributes:
+      actions:
+        - key: env
+          action: upsert
+          value: otel
+        - key: otel.source
+          action: upsert
+          value: cluster-otel
+    batch:
+      timeout: 2s
+  exporters:
+    datadog:
+      api:
+        site: ${env:DD_SITE}
+        key: ${env:DD_API_KEY}
+  service:
+    pipelines:
+      metrics:
+        processors:
+          - batch
+          - attributes
+        exporters:
+          - datadog
+      logs:
+        processors:
+          - batch
+          - attributes
+        exporters:
+          - datadog
+      traces: {}
