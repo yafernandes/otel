@@ -4,7 +4,7 @@ IFS=$'\n\t'
 
 kubectl create ns otel
 
-kubectl apply -n otel -f datadog.yaml
+kubectl apply -n otel -f datadog-secrets.yaml
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.2/cert-manager.yaml
 
@@ -12,6 +12,8 @@ helm install opentelemetry-operator open-telemetry/opentelemetry-operator \
   -n otel \
   --set admissionWebhooks.certManager.enabled=false \
   --set admissionWebhooks.certManager.autoGenerateCert=true
+
+kubectl wait --namespace otel --for=condition=ready pod --selector=app.kubernetes.io/name=opentelemetry-operator
 
 kubectl apply -f auto-intrumentation.yaml
 
