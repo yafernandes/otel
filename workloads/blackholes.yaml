@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: approver
+  namespace: developer-app
+  labels:
+    app.kubernetes.io/name: approver
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "otel/instrumentation"
+spec:
+  containers:
+  - name: approver
+    image: yaalexf/blackhole:main
+    imagePullPolicy: Always
+    env:
+    - name: APP_TOPIC
+      value: "developer-app-topic"
+    - name: APP_CONSUMER_GROUP
+      value: "approvers"
+    - name: APP_POLL_SIZE
+      value: "1"
+    - name: APP_POLL_DELAY_MILI
+      value: "1000"
+    resources:
+      limits: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emailer
+  namespace: developer-app
+  labels:
+    app.kubernetes.io/name: emailer
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "otel/instrumentation"
+spec:
+  containers:
+  - name: emailer
+    image: yaalexf/blackhole:main
+    imagePullPolicy: Always
+    env:
+    - name: APP_TOPIC
+      value: "developer-app-topic"
+    - name: APP_CONSUMER_GROUP
+      value: "emailers"
+    - name: APP_POLL_SIZE
+      value: "500"
+    - name: APP_POLL_DELAY_MILI
+      value: "60000"
+    resources:
+      limits: {}
