@@ -1,1 +1,12 @@
-/Users/alex.fernandes/work/toolbox/toolbox.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: toolbox
+spec:
+  containers:
+  - name: toolbox
+    image: yaalexf/toolbox:debian
+    imagePullPolicy: Always
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    resources: {}
