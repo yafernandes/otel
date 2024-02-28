@@ -23,7 +23,4 @@ helm install opentelemetry-cluster-collector open-telemetry/opentelemetry-collec
 # No arm64 support - https://github.com/open-telemetry/opentelemetry-network/blob/main/docs/roadmap.md#arm-support
 # helm install opentelemetry-ebpf open-telemetry/opentelemetry-ebpf -n otel -f otel-ebpf-values.yaml
 
-if [ -f ~/work/toolbox.yaml ]
-then
-  kubectl apply -f ~/work/toolbox.yaml
-fi
+kubectl apply -f workload/toolbox.yaml
