@@ -28,6 +28,34 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
+  name: copywriter
+  namespace: developer-app
+  labels:
+    app.kubernetes.io/name: copywriter
+  annotations:
+    instrumentation.opentelemetry.io/inject-java: "otel/instrumentation"
+spec:
+  containers:
+  - name: copywriter
+    image: yaalexf/blackhole:main
+    imagePullPolicy: Always
+    env:
+    - name: APP_TOPIC
+      value: "developer-app-topic"
+    - name: APP_RELAY_TOPIC
+      value: "ready-to-go"
+    - name: APP_CONSUMER_GROUP
+      value: "emailers"
+    - name: APP_POLL_SIZE
+      value: "500"
+    - name: APP_POLL_DELAY_MILI
+      value: "60000"
+    resources:
+      limits: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
   name: emailer
   namespace: developer-app
   labels:
@@ -41,7 +69,7 @@ spec:
     imagePullPolicy: Always
     env:
     - name: APP_TOPIC
-      value: "developer-app-topic"
+      value: "ready-to-go"
     - name: APP_CONSUMER_GROUP
       value: "emailers"
     - name: APP_POLL_SIZE
