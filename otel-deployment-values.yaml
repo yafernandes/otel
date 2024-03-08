@@ -29,14 +29,14 @@ config:
     pipelines:
       metrics:
         processors:
-          - batch
           - attributes
+          - batch
         exporters:
           - datadog
       logs:
         processors:
-          - batch
           - attributes
+          - batch
         exporters:
           - datadog
       traces: {}
