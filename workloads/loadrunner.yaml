@@ -6,7 +6,6 @@ metadata:
   labels:
     app.kubernetes.io/name: loadrunner
     admission.datadoghq.com/enabled: "false"
-    tags.datadoghq.com/env: lab
     tags.datadoghq.com/service: loadrunner
     tags.datadoghq.com/version: "0.0"
 spec:
@@ -19,7 +18,7 @@ spec:
         - |-
           while true
           do
-            wget -qO /dev/nul http://developer-app.developer-app/process/payment
+            wget -qo /dev/nul http://developer-app.developer-app/process/payment
             sleep 10s
           done &
 
@@ -60,7 +59,7 @@ spec:
 
           while true
           do
-            sleep 1s
+            sleep 10s
             curl -sX PUT \
               -H 'Content-Type: application/json' \
               -d '{"foo":"bar"}' \
@@ -70,14 +69,14 @@ spec:
           while true
           do
             sleep 2s
-            curl -qO /dev/nul -sX GET \
+            curl -qo /dev/nul -sX GET \
               http://developer-app.developer-app/mysql/simple_query
           done &
 
           while true
           do
             sleep 10s
-            curl -qO /dev/nul -sX GET \
+            curl -qo /dev/nul -sX GET \
               http://developer-app.developer-app/mysql/simple_join
           done &
 
