@@ -8,10 +8,13 @@ kubectl apply -n otel -f datadog-secrets.yaml
 
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.yaml
 
-helm install opentelemetry-operator open-telemetry/opentelemetry-operator \
-  -n otel \
-  --set admissionWebhooks.certManager.enabled=false \
-  --set admissionWebhooks.certManager.autoGenerateCert=true
+sleep 5
+
+kubectl wait -n cert-manager --for=condition=ready pod --selector=app.kubernetes.io/name=cert-manager --timeout=5m
+kubectl wait -n cert-manager --for=condition=ready pod --selector=app.kubernetes.io/name=cainjector --timeout=5m
+kubectl wait -n cert-manager --for=condition=ready pod --selector=app.kubernetes.io/name=webhook --timeout=5m
+
+helm install opentelemetry-operator open-telemetry/opentelemetry-operator -n otel
 
 kubectl wait -n otel --for=condition=ready pod --selector=app.kubernetes.io/name=opentelemetry-operator --timeout=5m
 

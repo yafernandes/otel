@@ -196,7 +196,7 @@ metadata:
   name: mysql
   namespace: mysql
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: mysql
   ports:
